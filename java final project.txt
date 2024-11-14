@@ -1,0 +1,144 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        ParkingLot parkingLot = new ParkingLot();
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\nParking System Menu:");
+            System.out.println("1. Park a Vehicle");
+            System.out.println("2. Remove a Vehicle");
+            System.out.println("3. Display Parked Vehicles");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter vehicle type (Car/Bike): ");
+                    String type = scanner.nextLine();
+                    System.out.print("Enter license plate: ");
+                    String licensePlate = scanner.nextLine();
+                    System.out.print("Enter model: ");
+                    String model = scanner.nextLine();
+
+                    Vehicle vehicle;
+                    if (type.equalsIgnoreCase("Car")) {
+                        vehicle = new Car(licensePlate, model);
+                    } else if (type.equalsIgnoreCase("Bike")) {
+                        vehicle = new Bike(licensePlate, model);
+                    } else {
+                        System.out.println("Invalid vehicle type. Please enter Car or Bike.");
+                        continue;
+                    }
+                    parkingLot.parkVehicle(vehicle);
+                    break;
+
+                case 2:
+                    System.out.print("Enter license plate of the vehicle to remove: ");
+                    String plateToRemove = scanner.nextLine();
+                    parkingLot.removeVehicle(plateToRemove);
+                    break;
+
+                case 3:
+                    parkingLot.displayParkedVehicles();
+                    break;
+
+                case 4:
+                    System.out.println("Exiting the parking system.");
+                    scanner.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid choice. Please enter a number between 1 and 4.");
+            }
+        }
+    }
+}
+
+class Vehicle {
+    private String licensePlate;
+    private String model;
+
+    public Vehicle(String licensePlate, String model) {
+        this.licensePlate = licensePlate;
+        this.model = model;
+    }
+
+    public String getLicensePlate() {
+        return licensePlate;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    @Override
+    public String toString() {
+        return "License Plate: " + licensePlate + ", Model: " + model;
+    }
+}
+
+class Car extends Vehicle {
+    public Car(String licensePlate, String model) {
+        super(licensePlate, model);
+    }
+
+    @Override
+    public String toString() {
+        return "Car - " + super.toString();
+    }
+}
+
+class Bike extends Vehicle {
+    public Bike(String licensePlate, String model) {
+        super(licensePlate, model);
+    }
+
+    @Override
+    public String toString() {
+        return "Bike - " + super.toString();
+    }
+}
+
+class ParkingLot {
+    private ArrayList<Vehicle> vehicleList;
+    private final int MAX_CAPACITY = 6;
+
+    public ParkingLot() {
+        vehicleList = new ArrayList<>();
+    }
+
+    public void parkVehicle(Vehicle vehicle) {
+        if (vehicleList.size() >= MAX_CAPACITY) {
+            System.out.println("Parking lot is full. Cannot park more vehicles.");
+        } else {
+            vehicleList.add(vehicle);
+            System.out.println(vehicle + " parked.");
+        }
+    }
+
+    public void removeVehicle(String licensePlate) {
+        for (Vehicle vehicle : vehicleList) {
+            if (vehicle.getLicensePlate().equals(licensePlate)) {
+                vehicleList.remove(vehicle);
+                System.out.println(vehicle + " removed.");
+                return;
+            }
+        }
+        System.out.println("Vehicle with license plate " + licensePlate + " not found.");
+    }
+
+    public void displayParkedVehicles() {
+        if (vehicleList.isEmpty()) {
+            System.out.println("No vehicles in the parking lot.");
+        } else {
+            System.out.println("Parked Vehicles:");
+            for (Vehicle vehicle : vehicleList) {
+                System.out.println(vehicle);
+            }
+        }
+    }
+}
